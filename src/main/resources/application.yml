@@ -1,3 +1,7 @@
+#Default port is 8080
+server:
+  port: 8080
+  
 spring:
   zipkin:
     baseUrl:  http://localhost:9411
@@ -6,8 +10,8 @@ eureka:
   instance:
     preferIpAddress: true
 #Resolution TimeOut(1)    
-#(1)    lease-expiration-duration-in-seconds: 30 
-#(1)    lease-renewal-interval-in-seconds: 10
+#(1)    leaseExpirationDurationInSeconds: 30 
+#(1)    leaseRenewalIntervalInSeconds: 10
 #(1)    statusPageUrlPath: ${management.contextPath}/info      
 #(1)    healthCheckUrlPath: ${management.contextPath}/health
   client:
