@@ -1,5 +1,7 @@
 package com.scc.agria.model;
 
+import java.sql.Timestamp;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -39,6 +41,9 @@ public class Dog{
 
 	@Column(name = "couleur")
 	private String couleur;
+	
+	@Column(name = "date_maj")
+	private Timestamp timestamp;
   
 	public int getId() { return id; }
 	public void setId(int id) { this.id = id; }
@@ -69,6 +74,9 @@ public class Dog{
 
 	public String getCouleur() { return couleur; }
 	public void setCouleur(String couleur) { this.couleur = couleur; }
+	
+	public Timestamp getTimestamp() { return timestamp; }
+	public void setTimestamp(Timestamp timestamp) { this.timestamp = timestamp; }
 
 	public Dog withId(int id){ this.setId( id ); return this; }
 	public Dog withNom(String Nom){ this.setNom(Nom); return this; }
@@ -80,6 +88,13 @@ public class Dog{
 	public Dog withRace(String race){ this.setRace(race); return this; }
 	public Dog withVariete(String variete){ this.setVariete(variete); return this; }
 	public Dog withCouleur(String couleur){ this.setCouleur(couleur); return this; }
+	public Dog withTimestamp(Timestamp timestamp){ this.setTimestamp(timestamp); return this; }
 	
+	@Override
+	public String toString() {
+		return "Dog [id=" + id + ", nom=" + nom + ", sexe=" + sexe + ", dateNaissance=" + dateNaissance + ", lof=" + lof
+				+ ", tatouage=" + tatouage + ", transpondeur=" + transpondeur + ", race=" + race + ", variete="
+				+ variete + ", couleur=" + couleur + ", timestamp=" + timestamp + "]";
+	}
 
 }

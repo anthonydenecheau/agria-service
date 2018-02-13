@@ -8,6 +8,7 @@ import org.springframework.cloud.client.circuitbreaker.EnableCircuitBreaker;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 
 import com.scc.agria.utils.UserContextFilter;
 import org.springframework.cloud.sleuth.Sampler;
@@ -17,6 +18,7 @@ import org.springframework.cloud.sleuth.sampler.AlwaysSampler;
 @EnableEurekaClient
 @EnableCircuitBreaker
 @RefreshScope
+@ComponentScan("com.scc")
 public class Application {
 
     @Bean

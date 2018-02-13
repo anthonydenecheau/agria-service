@@ -12,6 +12,7 @@ import com.scc.agria.model.Dog;
 import com.scc.agria.repository.DogRepository;
 import com.scc.agria.template.ResponseObjectList;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -82,18 +83,6 @@ public class DogService {
 	    }
     }
 
-    public void saveLicense(Dog license){
-
-    }
-
-    public void updateLicense(Dog license){
-
-    }
-
-    public void deleteLicense(Dog license){
-
-    }
-
     private ResponseObjectList<Dog> buildFallbackDogIdentifiant(String searchIdentifiant){
     	
     	List<Dog> list = new ArrayList<Dog>(); 
@@ -103,4 +92,47 @@ public class DogService {
         return new ResponseObjectList<Dog>(list.size(), list);
     }
 
+    public void saveDog(Dog syncDog, Long timestamp){
+   	 
+    	try {
+	    	Dog dog = dogRepository.findById(syncDog.getId());
+	    	if (dog == null) {
+	    		logger.debug("Dog id {} not found", syncDog.getId());
+	    		syncDog
+	    			.withTimestamp(new Timestamp(timestamp))
+	    		;	    		
+	    		dogRepository.save(syncDog);
+	    	} else {
+	    		logger.debug("save dog id {}, {}, {}", dog.getId(), dog.getTimestamp().getTime(), timestamp);
+	    		if (dog.getTimestamp().getTime() < timestamp) {
+		    		logger.debug("check queue OK ; call saving changes ");
+		    		dog
+		    			.withNom(syncDog.getNom())
+		    			.withSexe(syncDog.getSexe())
+		    		    .withDateNaissance(syncDog.getDateNaissance())
+		    		    .withLof(syncDog.getLof())
+		    			.withTatouage(syncDog.getTatouage())
+		    			.withTranspondeur(syncDog.getTranspondeur())
+		    			.withRace(syncDog.getRace())
+		    			.withVariete(syncDog.getVariete())
+		    			.withCouleur(syncDog.getCouleur())
+		    			.withTimestamp(new Timestamp(timestamp))
+		    		;
+	    			dogRepository.save(dog);
+	    		} else
+		    		logger.debug("check queue KO : no changes saved");
+
+	    	}
+    	} finally {
+    		
+    	}
+    }
+
+    public void deleteDogById(int idDog){
+    	try {
+    		dogRepository.deleteById(idDog);
+    	} finally {
+    		
+    	}
+    }
 }

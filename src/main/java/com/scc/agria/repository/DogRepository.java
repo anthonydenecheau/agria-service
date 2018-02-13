@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.scc.agria.model.Dog;
 
@@ -12,5 +13,10 @@ public interface DogRepository extends CrudRepository<Dog,String>  {
     public Dog findById(int id);
     public List<Dog> findByTatouage(String toutage);
     public List<Dog> findByTranspondeur(String transpondeur);
+    
+    public Dog save (Dog dog);
+    
+    @Transactional
+    public void deleteById(int id);
 
 }

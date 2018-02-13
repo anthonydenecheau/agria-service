@@ -3,6 +3,17 @@ server:
   port: 8080
   
 spring:
+  cloud:
+    stream:
+      bindings:
+        inboundDogChanges:
+          destination: dogChangeTopic
+          content-type: application/json
+          group: agriaGroup
+      kafka:
+        binder:
+          zkNodes: localhost
+          brokers: localhost
   zipkin:
     baseUrl:  http://localhost:9411
 
