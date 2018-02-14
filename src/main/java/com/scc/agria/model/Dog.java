@@ -7,6 +7,8 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 @Table(name = "agria_chien")
 public class Dog{
@@ -43,6 +45,7 @@ public class Dog{
 	private String couleur;
 	
 	@Column(name = "date_maj")
+	@JsonIgnore
 	private Timestamp timestamp;
   
 	public int getId() { return id; }
