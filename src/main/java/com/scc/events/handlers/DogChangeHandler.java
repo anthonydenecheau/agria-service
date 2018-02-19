@@ -23,19 +23,19 @@ public class DogChangeHandler {
         logger.debug("Received a message of type {} traceId {} ", dogChange.getType(), dogChange.getTraceId());
         switch(dogChange.getAction()){
             case "GET":
-                logger.debug("Received a GET event from daemon service for dog id {}", dogChange.getDog().getId());
+                logger.debug("Received a GET event from daemon agria for dog id {}", dogChange.getDog().getId());
                 break;
             case "SAVE":
             case "UPDATE":
-                logger.debug("Received a {} event from the daemon service for dog id {}", dogChange.getAction(), dogChange.getDog().toString());
+                logger.debug("Received a {} event from the daemon agria for dog id {}", dogChange.getAction(), dogChange.getDog().toString());
                 dogService.saveDog(dogChange.getDog(), dogChange.getTimestamp());
                 break;
             case "DELETE":
-                logger.debug("Received a DELETE event from the daemon service for dog id {}", dogChange.getDog().getId());
+                logger.debug("Received a DELETE event from the daemon agria for dog id {}", dogChange.getDog().getId());
                 dogService.deleteDogById(dogChange.getDog().getId());
                 break;
             default:
-                logger.error("Received an UNKNOWN event from the organization service of type {}", dogChange.getDog().getId());
+                logger.error("Received an UNKNOWN event from the daemon agria of type {}", dogChange.getDog().getId());
                 break;
         }
     }
