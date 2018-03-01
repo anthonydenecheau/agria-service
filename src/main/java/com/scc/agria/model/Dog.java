@@ -45,7 +45,6 @@ public class Dog{
 	private String couleur;
 	
 	@Column(name = "date_maj")
-	@JsonIgnore
 	private Timestamp timestamp;
   
 	public int getId() { return id; }

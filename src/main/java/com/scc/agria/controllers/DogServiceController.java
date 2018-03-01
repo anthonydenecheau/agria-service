@@ -2,6 +2,7 @@ package com.scc.agria.controllers;
 
 import com.scc.agria.model.Dog;
 import com.scc.agria.services.DogService;
+import com.scc.agria.template.DogObject;
 import com.scc.agria.template.ResponseObjectList;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,12 +21,12 @@ public class DogServiceController {
     private DogService dogService;
 
     @RequestMapping(value="/{dogId}",method = RequestMethod.GET)
-    public Dog getDog( @PathVariable("dogId") int dogId) {
+    public DogObject getDog( @PathVariable("dogId") int dogId) {
         return dogService.getDogById(dogId);
     }
     
     @RequestMapping(value="/identifiant/{search}",method = RequestMethod.GET)
-    public ResponseObjectList<Dog> getDogByIdentifiant( @PathVariable("search") String search) {
+    public ResponseObjectList<DogObject> getDogByIdentifiant( @PathVariable("search") String search) {
         return dogService.getDogByIdentifiant(search);
     }    
 

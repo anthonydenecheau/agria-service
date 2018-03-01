@@ -10,6 +10,7 @@ import com.netflix.hystrix.contrib.javanica.annotation.HystrixProperty;
 import com.scc.agria.config.ServiceConfig;
 import com.scc.agria.model.Dog;
 import com.scc.agria.repository.DogRepository;
+import com.scc.agria.template.DogObject;
 import com.scc.agria.template.ResponseObjectList;
 
 import java.sql.Timestamp;
@@ -33,11 +34,25 @@ public class DogService {
     @Autowired
     ServiceConfig config;
 
-    public Dog getDogById(int dogId){
+    public DogObject getDogById(int dogId){
         Span newSpan = tracer.createSpan("getDogById");
         logger.debug("In the dogService.getDogById() call, trace id: {}", tracer.getCurrentSpan().traceIdString());
         try {
-        	return dogRepository.findById(dogId);
+        	Dog dog = new Dog();
+        	dog = dogRepository.findById(dogId);
+        	
+        	return (DogObject) new DogObject()
+    			.withId(dog.getId())
+    			.withNom(dog.getNom())
+    			.withSexe(dog.getSexe())
+    			.withDateNaissance(dog.getDateNaissance())
+    			.withLof(dog.getLof())
+    			.withTatouage(dog.getTatouage())
+    			.withTranspondeur(dog.getTranspondeur())
+    			.withRace(dog.getRace())
+    			.withVariete(dog.getVariete())
+    			.withCouleur(dog.getCouleur())
+    		;
         }
         finally{
           newSpan.tag("peer.service", "postgres");
@@ -59,7 +74,7 @@ public class DogService {
                      @HystrixProperty(name="metrics.rollingStats.timeInMilliseconds", value="15000"),
                      @HystrixProperty(name="metrics.rollingStats.numBuckets", value="5")}
     )
-    public ResponseObjectList<Dog> getDogByIdentifiant(String searchIdentifiant){
+    public ResponseObjectList<DogObject> getDogByIdentifiant(String searchIdentifiant){
 
         Span newSpan = tracer.createSpan("getDogByIdentifiant");
         logger.debug("In the dogService.getDogByIdentifiant() call, trace id: {}", tracer.getCurrentSpan().traceIdString());
@@ -74,22 +89,44 @@ public class DogService {
 	    	else
 	    		list = dogRepository.findByTranspondeur(searchIdentifiant);
 	    
-	    	return new ResponseObjectList<Dog>(list.size(), list);
+	    	// Pour conserver le timestamp lors de la maj via message (@JsonIgnore impossible s/ timestamp sinon timestamp == null)
+	    	// nous sommes obligés de passer par une classe intermédiaire DogObject
+	    	List<DogObject> dogs = new ArrayList<DogObject>(); 
+	    	for (Dog dog : list) {
+	    		dogs.add(
+	    		  (DogObject) new DogObject()
+	    			.withId(dog.getId())
+	    			.withNom(dog.getNom())
+	    			.withSexe(dog.getSexe())
+	    			.withDateNaissance(dog.getDateNaissance())
+	    			.withLof(dog.getLof())
+	    			.withTatouage(dog.getTatouage())
+	    			.withTranspondeur(dog.getTranspondeur())
+	    			.withRace(dog.getRace())
+	    			.withVariete(dog.getVariete())
+	    			.withCouleur(dog.getCouleur())
+	    		);
+	    	}
+
+	    	list.clear();
+	    	
+	    	return new ResponseObjectList<DogObject>(dogs.size(), dogs);
         }
 	    finally{
+	    	
 	    	newSpan.tag("peer.service", "postgres");
 	        newSpan.logEvent(org.springframework.cloud.sleuth.Span.CLIENT_RECV);
 	        tracer.close(newSpan);
 	    }
     }
 
-    private ResponseObjectList<Dog> buildFallbackDogIdentifiant(String searchIdentifiant){
+    private ResponseObjectList<DogObject> buildFallbackDogIdentifiant(String searchIdentifiant){
     	
-    	List<Dog> list = new ArrayList<Dog>(); 
-    	list.add(new Dog()
+    	List<DogObject> list = new ArrayList<DogObject>(); 
+    	list.add((DogObject) new DogObject()
                 .withId(0))
     	;
-        return new ResponseObjectList<Dog>(list.size(), list);
+        return new ResponseObjectList<DogObject>(list.size(), list);
     }
 
     public void saveDog(Dog syncDog, Long timestamp){
