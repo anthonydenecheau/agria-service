@@ -179,6 +179,8 @@ public class DogService {
     public void deleteDogById(int idDog){
     	try {
     		dogRepository.deleteById(idDog);
+      } catch (Exception e) {
+         logger.error("deleteDogById : {}", e.getMessage());    		
     	} finally {
     		
     	}
