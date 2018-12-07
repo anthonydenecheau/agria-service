@@ -169,6 +169,8 @@ public class DogService {
 		    		logger.debug("check queue KO : no changes saved");
 
 	    	}
+      } catch (Exception e) {
+         logger.error("saveDog : {}", e.getMessage());	    	
     	} finally {
     		
     	}
