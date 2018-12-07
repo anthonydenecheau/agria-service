@@ -1,6 +1,5 @@
 package com.scc.agria.controllers;
 
-import com.scc.agria.model.Dog;
 import com.scc.agria.services.DogService;
 import com.scc.agria.template.DogObject;
 import com.scc.agria.template.ResponseObjectList;
@@ -31,18 +30,18 @@ public class DogServiceController {
     }    
 
     @RequestMapping(value="{dogId}",method = RequestMethod.PUT)
-    public String updateDog( @PathVariable("dogId") String licenseId) {
+    public String updateDog( @PathVariable("dogId") String dogId) {
         return String.format("This is the put");
     }
 
     @RequestMapping(value="{dogId}",method = RequestMethod.POST)
-    public String saveDog( @PathVariable("dogId") String licenseId) {
+    public String saveDog( @PathVariable("dogId") String dogId) {
         return String.format("This is the post");
     }
 
     @RequestMapping(value="{dogId}",method = RequestMethod.DELETE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public String deleteDog( @PathVariable("dogId") String licenseId) {
+    public String deleteDog( @PathVariable("dogId") String dogId) {
         return String.format("This is the Delete");
     }
 }

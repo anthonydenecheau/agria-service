@@ -41,18 +41,24 @@ public class DogService {
         	Dog dog = new Dog();
         	dog = dogRepository.findById(dogId);
         	
-        	return (DogObject) new DogObject()
-    			.withId(dog.getId())
-    			.withNom(dog.getNom())
-    			.withSexe(dog.getSexe())
-    			.withDateNaissance(dog.getDateNaissance())
-    			.withLof(dog.getLof())
-    			.withTatouage(dog.getTatouage())
-    			.withTranspondeur(dog.getTranspondeur())
-    			.withRace(dog.getRace())
-    			.withVariete(dog.getVariete())
-    			.withCouleur(dog.getCouleur())
-    		;
+        	if (dog == null ) {
+        		return (DogObject) new DogObject()
+                        .withId(0)
+                ;
+        	} else {
+	        	return (DogObject) new DogObject()
+	    			.withId(dog.getId())
+	    			.withNom(dog.getNom())
+	    			.withSexe(dog.getSexe())
+	    			.withDateNaissance(dog.getDateNaissance())
+	    			.withLof(dog.getLof())
+	    			.withTatouage(dog.getTatouage())
+	    			.withTranspondeur(dog.getTranspondeur())
+	    			.withRace(dog.getRace())
+	    			.withVariete(dog.getVariete())
+	    			.withCouleur(dog.getCouleur())
+	    		;
+        	}
         }
         finally{
           newSpan.tag("peer.service", "postgres");
@@ -78,6 +84,9 @@ public class DogService {
 
         Span newSpan = tracer.createSpan("getDogByIdentifiant");
         logger.debug("In the dogService.getDogByIdentifiant() call, trace id: {}", tracer.getCurrentSpan().traceIdString());
+
+        List<DogObject> dogs = new ArrayList<DogObject>(); 
+
         try {
 	    	/*
 	        * norme ISO (FDXB) = 15 chiffres
@@ -91,7 +100,6 @@ public class DogService {
 	    
 	    	// Pour conserver le timestamp lors de la maj via message (@JsonIgnore impossible s/ timestamp sinon timestamp == null)
 	    	// nous sommes obligés de passer par une classe intermédiaire DogObject
-	    	List<DogObject> dogs = new ArrayList<DogObject>(); 
 	    	for (Dog dog : list) {
 	    		dogs.add(
 	    		  (DogObject) new DogObject()
@@ -110,14 +118,15 @@ public class DogService {
 
 	    	list.clear();
 	    	
-	    	return new ResponseObjectList<DogObject>(dogs.size(), dogs);
-        }
-	    finally{
-	    	
-	    	newSpan.tag("peer.service", "postgres");
-	        newSpan.logEvent(org.springframework.cloud.sleuth.Span.CLIENT_RECV);
-	        tracer.close(newSpan);
+       } catch (Exception e) {
+          logger.error("getDogByIdentifiant : {}", e.getMessage());
+       } finally{
+          newSpan.tag("peer.service", "postgres");
+	       newSpan.logEvent(org.springframework.cloud.sleuth.Span.CLIENT_RECV);
+	       tracer.close(newSpan);
 	    }
+       return new ResponseObjectList<DogObject>(dogs.size(), dogs);
+        
     }
 
     private ResponseObjectList<DogObject> buildFallbackDogIdentifiant(String searchIdentifiant){
